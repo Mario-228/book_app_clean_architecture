@@ -8,13 +8,11 @@ abstract class HomeLocalDataSource {
 class HomeLocalDataSourceImplementation extends HomeLocalDataSource {
   @override
   List<BookEntity> fetchFeaturedBooks() {
-    // TODO: implement fetchFeaturedBooks
     throw UnimplementedError();
   }
 
   @override
   List<BookEntity> fetchNewestBooks() {
-    // TODO: implement fetchNewestBooks
     throw UnimplementedError();
   }
 }
