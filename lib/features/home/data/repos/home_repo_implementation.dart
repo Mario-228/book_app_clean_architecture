@@ -4,6 +4,7 @@ import 'package:book_app_clean_architecture/features/home/data/data_sources/home
 import 'package:book_app_clean_architecture/features/home/domain/entities/book_entity.dart';
 import 'package:book_app_clean_architecture/features/home/domain/repos/home_repo.dart';
 import 'package:dartz/dartz.dart';
+import 'package:dio/dio.dart';
 
 class HomeRepoImplementation implements HomeRepo {
   final HomeLocalDataSource homeLocalDataSource;
@@ -20,7 +21,11 @@ class HomeRepoImplementation implements HomeRepo {
       var data = await homeRemoteDataSource.fetchFeaturedBooks();
       return right(data);
     } catch (e) {
-      return left(ServerError());
+      if (e is DioException) {
+        return left(ServerError.fromDioError(e));
+      } else {
+        return left(ServerError(errorMessage: e.toString()));
+      }
     }
   }
 
@@ -34,7 +39,11 @@ class HomeRepoImplementation implements HomeRepo {
       var data = await homeRemoteDataSource.fetchNewestBooks();
       return right(data);
     } catch (e) {
-      return left(ServerError());
+      if (e is DioException) {
+        return left(ServerError.fromDioError(e));
+      } else {
+        return left(ServerError(errorMessage: e.toString()));
+      }
     }
   }
 }
