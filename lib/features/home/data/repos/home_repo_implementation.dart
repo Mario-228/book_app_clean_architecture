@@ -1,3 +1,4 @@
+import 'package:book_app_clean_architecture/core/errors/error.dart';
 import 'package:book_app_clean_architecture/features/home/data/data_sources/home_local_data_source.dart';
 import 'package:book_app_clean_architecture/features/home/data/data_sources/home_remote_data_source.dart';
 import 'package:book_app_clean_architecture/features/home/domain/entities/book_entity.dart';
@@ -10,7 +11,7 @@ class HomeRepoImplementation implements HomeRepo {
   HomeRepoImplementation(
       {required this.homeLocalDataSource, required this.homeRemoteDataSource});
   @override
-  Future<Either<Error, List<BookEntity>>> fetchFeaturedBooks() async {
+  Future<Either<Errors, List<BookEntity>>> fetchFeaturedBooks() async {
     try {
       var booksList = homeLocalDataSource.fetchFeaturedBooks();
       if (booksList.isNotEmpty) {
@@ -19,12 +20,12 @@ class HomeRepoImplementation implements HomeRepo {
       var data = await homeRemoteDataSource.fetchFeaturedBooks();
       return right(data);
     } catch (e) {
-      return left(Error());
+      return left(ServerError());
     }
   }
 
   @override
-  Future<Either<Error, List<BookEntity>>> fetchNewestBooks() async {
+  Future<Either<Errors, List<BookEntity>>> fetchNewestBooks() async {
     try {
       var booksList = homeLocalDataSource.fetchNewestBooks();
       if (booksList.isNotEmpty) {
@@ -33,7 +34,7 @@ class HomeRepoImplementation implements HomeRepo {
       var data = await homeRemoteDataSource.fetchNewestBooks();
       return right(data);
     } catch (e) {
-      return left(Error());
+      return left(ServerError());
     }
   }
 }
