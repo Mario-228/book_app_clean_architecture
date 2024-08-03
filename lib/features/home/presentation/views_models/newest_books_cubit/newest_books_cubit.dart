@@ -1,5 +1,6 @@
 import 'package:book_app_clean_architecture/features/home/domain/use_cases/fetch_newest_books_use_case.dart';
 import 'package:book_app_clean_architecture/features/home/presentation/views_models/newest_books_cubit/newest_books_state.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class NewestBooksCubit extends Cubit<NewestBooksState> {
@@ -7,7 +8,7 @@ class NewestBooksCubit extends Cubit<NewestBooksState> {
       : super(NewestBooksInitialState());
 
   final FetchNewestBooksUseCase fetchNewestBooksUseCase;
-  static NewestBooksCubit get(context) => BlocProvider.of(context);
+  static NewestBooksCubit get(BuildContext context) => BlocProvider.of(context);
 
   Future<void> fetchNewestBooks() async {
     emit(NewestBooksLoadingState());

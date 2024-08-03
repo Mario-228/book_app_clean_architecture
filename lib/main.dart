@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:pretty_bloc_observer/pretty_bloc_observer.dart';
 
 void main() async {
   await Hive.initFlutter();
@@ -18,6 +19,7 @@ void main() async {
   setupServiceLocator();
   await Hive.openBox<BookEntity>(kFeaturedBox);
   await Hive.openBox<BookEntity>(kNewestBox);
+  Bloc.observer = PrettyBlocObserver();
   runApp(const Bookly());
 }
 
@@ -33,14 +35,14 @@ class Bookly extends StatelessWidget {
             FetchNewestBooksUseCase(
               homeRepo: getIt.get<HomeRepoImplementation>(),
             ),
-          ),
+          )..fetchNewestBooks(),
         ),
         BlocProvider(
           create: (context) => FeaturedBooksCubit(
             FetchFeaturedBooksUseCase(
               homeRepo: getIt.get<HomeRepoImplementation>(),
             ),
-          ),
+          )..fetchFeaturedBooks(),
         ),
       ],
       child: MaterialApp.router(
