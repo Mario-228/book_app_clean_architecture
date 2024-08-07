@@ -3,6 +3,7 @@ import 'package:book_app_clean_architecture/features/home/domain/entities/book_e
 import 'package:dartz/dartz.dart';
 
 abstract class HomeRepo {
-  Future<Either<Errors, List<BookEntity>>> fetchFeaturedBooks();
+  Future<Either<Errors, List<BookEntity>>> fetchFeaturedBooks(
+      {int pageNumber = 0});
   Future<Either<Errors, List<BookEntity>>> fetchNewestBooks();
 }
