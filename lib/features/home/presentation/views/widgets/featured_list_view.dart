@@ -12,12 +12,17 @@ class FeaturedBooksListView extends StatelessWidget {
   Widget build(BuildContext context) {
     late final ScrollController scrollController = ScrollController();
     int nextPage = 1;
-    void scrollListener() {
+    bool isLoading = false;
+    void scrollListener() async {
       var currentIndex = scrollController.position.pixels;
       var maxLength = scrollController.position.maxScrollExtent;
       if (currentIndex >= 0.7 * maxLength) {
-        BlocProvider.of<FeaturedBooksCubit>(context)
-            .fetchFeaturedBooks(pageNumber: nextPage++);
+        if (!isLoading) {
+          isLoading = true;
+          await BlocProvider.of<FeaturedBooksCubit>(context)
+              .fetchFeaturedBooks(pageNumber: nextPage++);
+          isLoading = false;
+        }
       }
     }
 
