@@ -5,46 +5,55 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'custom_book_item.dart';
 
-class FeaturedBooksListView extends StatelessWidget {
+class FeaturedBooksListView extends StatefulWidget {
   const FeaturedBooksListView({super.key, required this.books});
   final List<BookEntity> books;
+
+  @override
+  State<FeaturedBooksListView> createState() => _FeaturedBooksListViewState();
+}
+
+class _FeaturedBooksListViewState extends State<FeaturedBooksListView> {
+  late final ScrollController scrollController;
+  int nextPage = 1;
+  bool isLoading = false;
+  @override
+  void initState() {
+    super.initState();
+    scrollController = ScrollController();
+    scrollController.addListener(scrollListener);
+  }
+
   @override
   Widget build(BuildContext context) {
-    late final ScrollController scrollController = ScrollController();
-    int nextPage = 1;
-    bool isLoading = false;
-    void scrollListener() async {
-      var currentIndex = scrollController.position.pixels;
-      var maxLength = scrollController.position.maxScrollExtent;
-      if (currentIndex >= 0.7 * maxLength) {
-        if (!isLoading) {
-          isLoading = true;
-          await BlocProvider.of<FeaturedBooksCubit>(context)
-              .fetchFeaturedBooks(pageNumber: nextPage++);
-          isLoading = false;
-        }
+    return SizedBox(
+      height: MediaQuery.of(context).size.height * .3,
+      child: ListView.builder(
+          controller: scrollController,
+          physics: const BouncingScrollPhysics(),
+          itemCount: widget.books.length,
+          scrollDirection: Axis.horizontal,
+          itemBuilder: (context, index) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: CustomBookImage(
+                image: widget.books[index].image ?? "",
+              ),
+            );
+          }),
+    );
+  }
+
+  void scrollListener() async {
+    var currentIndex = scrollController.position.pixels;
+    var maxLength = scrollController.position.maxScrollExtent;
+    if (currentIndex >= 0.7 * maxLength) {
+      if (!isLoading) {
+        isLoading = true;
+        await BlocProvider.of<FeaturedBooksCubit>(context)
+            .fetchFeaturedBooks(pageNumber: nextPage++);
+        isLoading = false;
       }
     }
-
-    return Builder(builder: (context) {
-      scrollController.addListener(scrollListener);
-
-      return SizedBox(
-        height: MediaQuery.of(context).size.height * .3,
-        child: ListView.builder(
-            controller: scrollController,
-            physics: const BouncingScrollPhysics(),
-            itemCount: books.length,
-            scrollDirection: Axis.horizontal,
-            itemBuilder: (context, index) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: CustomBookImage(
-                  image: books[index].image ?? "",
-                ),
-              );
-            }),
-      );
-    });
   }
 }

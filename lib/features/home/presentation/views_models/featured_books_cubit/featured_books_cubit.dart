@@ -12,12 +12,22 @@ class FeaturedBooksCubit extends Cubit<FeaturedBooksState> {
       BlocProvider.of(context);
 
   Future<void> fetchFeaturedBooks({int pageNumber = 0}) async {
-    emit(FeaturedBooksLoadingState());
+    if (pageNumber == 0) {
+      emit(FeaturedBooksLoadingState());
+    } else {
+      emit(FeaturedBooksPaginationLoadingState());
+    }
 
     var result = await fetchFeaturedBooksUseCase.call(param: pageNumber);
     result.fold(
-      (error) =>
-          emit(FeaturedBooksFailureState(errorMessage: error.errorMessage)),
+      (error) {
+        if (pageNumber == 0) {
+          emit(FeaturedBooksFailureState(errorMessage: error.errorMessage));
+        } else {
+          emit(FeaturedBooksPaginationFailureState(
+              errorMessage: error.errorMessage));
+        }
+      },
       (value) => emit(FeaturedBooksSuccessState(books: value)),
     );
   }

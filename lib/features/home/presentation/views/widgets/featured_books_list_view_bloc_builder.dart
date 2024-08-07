@@ -1,3 +1,4 @@
+import 'package:book_app_clean_architecture/features/home/domain/entities/book_entity.dart';
 import 'package:book_app_clean_architecture/features/home/presentation/views/widgets/featured_list_view.dart';
 import 'package:book_app_clean_architecture/features/home/presentation/views_models/featured_books_cubit/featured_books_cubit.dart';
 import 'package:book_app_clean_architecture/features/home/presentation/views_models/featured_books_cubit/featured_books_state.dart';
@@ -11,11 +12,18 @@ class FeaturedBooksListViewBlocBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<FeaturedBooksCubit, FeaturedBooksState>(
-        builder: (context, state) {
+    List<BookEntity> books = [];
+    return BlocConsumer<FeaturedBooksCubit, FeaturedBooksState>(
+        listener: (context, state) {
       if (state is FeaturedBooksSuccessState) {
+        books.addAll(state.books);
+      }
+    }, builder: (context, state) {
+      if (state is FeaturedBooksSuccessState ||
+          state is FeaturedBooksPaginationLoadingState ||
+          state is FeaturedBooksPaginationFailureState) {
         return FeaturedBooksListView(
-          books: state.books,
+          books: books,
         );
       } else if (state is FeaturedBooksFailureState) {
         return Center(
